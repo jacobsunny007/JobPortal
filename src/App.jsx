@@ -4,19 +4,21 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import JobPostForm from './components/Employer/JobPostPage'
 import { Route, Routes } from 'react-router-dom'
+import Employerlogin from './components/SignIn/Employerlogin'
+import Jobseeker from './components/SignIn/Jobseeker'
+import Navbar from './components/Navbar/Nav'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-    <Routes>
-      
+    <Navbar/>
+    {/* <Routes>
         <Route path="/p" element={<JobPostForm/>}/>
-        
-
-      
-     </Routes> 
+        <Route path="/e" element={<Employerlogin/>}/>
+        <Route pathe="/j" element={<Jobseeker/>}/>      
+     </Routes>  */}
     </>
   )
 }
