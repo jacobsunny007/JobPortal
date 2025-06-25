@@ -7,7 +7,11 @@ import {
   Button,
   Box,
   Paper,
+  Snackbar,
+  Alert,
 } from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const JobPostForm = () => {
   const [formData, setFormData] = useState({
@@ -19,13 +23,29 @@ const JobPostForm = () => {
     description: '',
   });
 
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Job Posted:', formData);
+    try {
+      await axios.post('http://localhost:5000/api/jobs', formData); // POST to backend
+      setSnackbar({ open: true, message: 'Job posted successfully!', severity: 'success' });
+
+      // Optional: Navigate to job list page
+      setTimeout(() => navigate('/job'), 1500);
+    } catch (error) {
+      console.error('Job post failed:', error);
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.error || 'Failed to post job.',
+        severity: 'error',
+      });
+    }
   };
 
   return (
@@ -113,6 +133,21 @@ const JobPostForm = () => {
           </Button>
         </Box>
       </Paper>
+
+      {/* Snackbar for feedback */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

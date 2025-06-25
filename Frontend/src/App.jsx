@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import JobPostForm from './components/Employer/JobPostPage'
+import JobPostPage from './components/Employer/JobPostPage'
 import { Route, Routes } from 'react-router-dom'
 import Employerlogin from './components/SignIn/Employerlogin'
 import Jobseeker from './components/SignIn/Jobseeker'
@@ -15,13 +15,13 @@ function App() {
   return (
     <>
     {/* <Navbar/> */}
-    <Job/>
-     {/* <Routes>
-        <Route path="/p" element={<JobPostForm/>}/>
+    {/* <Job/> */}
+     <Routes>
+         <Route path="/job-post" element={<JobPostPage/>}/>
         <Route path="/e" element={<Employerlogin/>}/>
         <Route path="/j" element={<Jobseeker/>}/>  
-        <Route path="/h" element={<Job/>} /> 
-     </Routes>   */}
+        <Route path="/job" element={<Job/>} /> 
+     </Routes>   
     </>
   )
 }

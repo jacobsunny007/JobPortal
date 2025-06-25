@@ -1,20 +1,49 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Box, Link } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  Link,
+  Snackbar,
+  Alert
+} from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Employee() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSignUp) {
-      alert(`Signing Up:\nName: ${formData.name}\nEmail: ${formData.email}`);
-    } else {
-      alert(`Signing In:\nEmail: ${formData.email}`);
+
+    // ✅ Fixed: Use backend port 5000
+    const endpoint = isSignUp
+      ? 'http://localhost:5000/api/seeker/register'
+      : 'http://localhost:5000/api/seeker/login';
+
+    try {
+      const res = await axios.post(endpoint, formData);
+      setSnackbar({ open: true, message: 'Success!', severity: 'success' });
+
+      setTimeout(() => {
+        navigate('/job');
+      }, 1500);
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: err.response?.data?.error || 'An error occurred',
+        severity: 'error'
+      });
     }
   };
 
@@ -88,6 +117,21 @@ export default function Employee() {
           </Link>
         </Typography>
       </Box>
+
+      {/* Snackbar for alerts */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
