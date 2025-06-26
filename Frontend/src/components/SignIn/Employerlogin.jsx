@@ -17,12 +17,10 @@ export default function Employer() {
     confirmPassword: '',
   });
 
-  // Snackbar states
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState('');
   const [snackSeverity, setSnackSeverity] = useState('success');
 
-  // Spinner state
   const [loading, setLoading] = useState(false);
 
   const toggleMode = () => {
@@ -30,7 +28,6 @@ export default function Employer() {
       companyName: '',
       email: '',
       password: '',
-      confirmPassword: '',
     });
     setIsSignUp(!isSignUp);
   };
@@ -41,7 +38,7 @@ export default function Employer() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Show loading
+    setLoading(true);
 
     const endpoint = isSignUp
       ? 'http://localhost:5000/api/employer/register'
@@ -76,9 +73,8 @@ export default function Employer() {
       setSnackMessage(errorMsg);
       setSnackSeverity('error');
       setSnackOpen(true);
-      console.error("Backend error:", errorMsg);
     } finally {
-      setLoading(false); // Hide loading
+      setLoading(false);
     }
   };
 
@@ -90,15 +86,20 @@ export default function Employer() {
           mt: 10,
           p: 5,
           borderRadius: 4,
-          background: 'linear-gradient(135deg, #e3f2fd, rgb(122, 95, 95))',
-          boxShadow: '0 0 20px rgba(0,0,0,0.2)',
+          background: 'linear-gradient(to bottom right, #e3f2fd, #ffffff)',
+          boxShadow: '0 0 20px rgba(0,0,0,0.1)',
         }}
       >
-        <Typography variant="h4" align="center" gutterBottom sx={{ color: '#0d47a1' }}>
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          sx={{ color: '#0d47a1', fontWeight: 'bold' }}
+        >
           {isSignUp ? 'Employer Sign Up' : 'Employer Sign In'}
         </Typography>
 
-        <Divider sx={{ my: 2, backgroundColor: '#1976d2' }} />
+        <Divider sx={{ my: 2, backgroundColor: '#64b5f6' }} />
 
         <Box component="form" onSubmit={handleSubmit}>
           {isSignUp && (
@@ -137,20 +138,6 @@ export default function Employer() {
             required
           />
 
-          {isSignUp && (
-            <TextField
-              fullWidth
-              label="Confirm Password"
-              type="password"
-              variant="outlined"
-              margin="normal"
-              name="confirmPassword"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          )}
-
           <Button
             type="submit"
             fullWidth
@@ -161,8 +148,8 @@ export default function Employer() {
               py: 1.2,
               fontWeight: 'bold',
               fontSize: '1rem',
-              backgroundColor: '#1565c0',
-              '&:hover': { backgroundColor: '#0d47a1' },
+              backgroundColor: '#1e88e5',
+              '&:hover': { backgroundColor: '#1565c0' },
             }}
           >
             {loading ? (
@@ -173,15 +160,23 @@ export default function Employer() {
           </Button>
         </Box>
 
-        <Typography align="center" sx={{ mt: 3 }}>
+        <Typography align="center" sx={{ mt: 3, color: '#2e7d32' }}>
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-          <Button onClick={toggleMode} sx={{ textTransform: 'none', fontWeight: 'bold' }}>
+          <Button
+            onClick={toggleMode}
+            sx={{
+              textTransform: 'none',
+              fontWeight: 'bold',
+              color: '#2e7d32',
+              '&:hover': { color: '#1b5e20' },
+            }}
+          >
             {isSignUp ? 'Sign In' : 'Sign Up'}
           </Button>
         </Typography>
       </Paper>
 
-      {/* ✅ Snackbar (at top center) */}
+      {/* Snackbar */}
       <Snackbar
         open={snackOpen}
         autoHideDuration={4000}

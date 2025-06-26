@@ -7,7 +7,8 @@ import {
   Box,
   Link,
   Snackbar,
-  Alert
+  Alert,
+  Divider
 } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +27,6 @@ export default function Employee() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Fixed: Use backend port 5000
     const endpoint = isSignUp
       ? 'http://localhost:5000/api/seeker/register'
       : 'http://localhost:5000/api/seeker/login';
@@ -59,17 +59,25 @@ export default function Employee() {
           mt: 8,
           p: 4,
           boxShadow: 3,
-          borderRadius: 2,
-          bgcolor: 'background.paper',
+          borderRadius: 3,
+          bgcolor: '#e3f2fd',
+          background: 'linear-gradient(to bottom right, #ffffff, #e3f2fd)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
-        <Typography variant="h5" gutterBottom>
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{ fontWeight: 'bold', color: '#1565c0' }}
+        >
           {isSignUp ? 'Job Seeker Sign Up' : 'Job Seeker Sign In'}
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+
+        <Divider sx={{ width: '100%', my: 2, backgroundColor: '#64b5f6' }} />
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
           {isSignUp && (
             <TextField
               fullWidth
@@ -105,14 +113,36 @@ export default function Employee() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{
+              mt: 3,
+              mb: 2,
+              backgroundColor: '#43a047',
+              '&:hover': {
+                backgroundColor: '#2e7d32',
+              },
+              fontWeight: 'bold',
+              py: 1.3,
+              fontSize: '1rem',
+            }}
           >
             {isSignUp ? 'Sign Up' : 'Sign In'}
           </Button>
         </Box>
-        <Typography variant="body2">
+
+        <Typography variant="body2" sx={{ color: '#2e7d32' }}>
           {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-          <Link component="button" variant="body2" onClick={toggleMode}>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={toggleMode}
+            sx={{
+              fontWeight: 'bold',
+              color: '#1b5e20',
+              '&:hover': {
+                color: '#0d4a1a',
+              },
+            }}
+          >
             {isSignUp ? 'Sign In' : 'Sign Up'}
           </Link>
         </Typography>
@@ -123,11 +153,14 @@ export default function Employee() {
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
+          elevation={6}
+          variant="filled"
         >
           {snackbar.message}
         </Alert>
