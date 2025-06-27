@@ -8,15 +8,28 @@ import {
   Link,
   Snackbar,
   Alert,
-  Divider
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  IconButton
 } from '@mui/material';
+import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function Employee() {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    age: '',
+    location: '',
+    linkedin: '',
+    bio: '',
+  });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -26,17 +39,20 @@ export default function Employee() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const endpoint = isSignUp
       ? 'http://localhost:5000/api/seeker/register'
       : 'http://localhost:5000/api/seeker/login';
 
     try {
       const res = await axios.post(endpoint, formData);
+
+      // ✅ Save email in localStorage after login/register
+      localStorage.setItem("email", formData.email);
+
       setSnackbar({ open: true, message: 'Success!', severity: 'success' });
 
       setTimeout(() => {
-        navigate('/job');
+        navigate('/job'); // ✅ Redirect to dashboard
       }, 1500);
     } catch (err) {
       setSnackbar({
@@ -49,106 +65,187 @@ export default function Employee() {
 
   const toggleMode = () => {
     setIsSignUp((prev) => !prev);
-    setFormData({ name: '', email: '', password: '' });
+    setFormData({
+      name: '',
+      email: '',
+      password: '',
+      age: '',
+      location: '',
+      linkedin: '',
+      bio: '',
+    });
   };
 
   return (
     <Container maxWidth="xs">
       <Box
         sx={{
-          mt: 8,
+          mt: 10,
           p: 4,
+          bgcolor: 'white',
           boxShadow: 3,
           borderRadius: 3,
-          bgcolor: '#e3f2fd',
-          background: 'linear-gradient(to bottom right, #ffffff, #e3f2fd)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          textAlign: 'center',
         }}
       >
-        <Typography
-          variant="h5"
-          gutterBottom
-          sx={{ fontWeight: 'bold', color: '#1565c0' }}
-        >
-          {isSignUp ? 'Job Seeker Sign Up' : 'Job Seeker Sign In'}
+        <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+          {isSignUp ? 'Job Seeker Registration' : 'Job Seeker Portal'}
+        </Typography>
+        <Typography variant="body2" sx={{ mb: 3, color: 'gray' }}>
+          {isSignUp ? 'Create your job seeker account' : 'Sign In'}
         </Typography>
 
-        <Divider sx={{ width: '100%', my: 2, backgroundColor: '#64b5f6' }} />
-
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+        <Box component="form" onSubmit={handleSubmit}>
           {isSignUp && (
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Full Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                name="name"
+                label="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                name="age"
+                label="Age"
+                type="number"
+                value={formData.age}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                name="location"
+                label="Location"
+                value={formData.location}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                name="linkedin"
+                label="LinkedIn Profile URL"
+                value={formData.linkedin}
+                onChange={handleChange}
+              />
+              <TextField
+                fullWidth
+                margin="normal"
+                name="bio"
+                label="Short Bio"
+                multiline
+                rows={3}
+                value={formData.bio}
+                onChange={handleChange}
+              />
+            </>
           )}
+
           <TextField
             fullWidth
             margin="normal"
-            label="Email"
             name="email"
+            label="Email"
             type="email"
             value={formData.email}
             onChange={handleChange}
             required
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Email />
+                </InputAdornment>
+              ),
+            }}
           />
           <TextField
             fullWidth
             margin="normal"
-            label="Password"
             name="password"
-            type="password"
+            label="Password"
+            type={showPassword ? 'text' : 'password'}
             value={formData.password}
             onChange={handleChange}
             required
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Lock />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => setShowPassword((prev) => !prev)} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
+
+          {!isSignUp && (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                my: 1,
+              }}
+            >
+              <FormControlLabel control={<Checkbox />} label="Remember me" />
+              <Link href="#" variant="body2" sx={{ fontWeight: 500 }}>
+                Forgot password?
+              </Link>
+            </Box>
+          )}
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{
-              mt: 3,
+              mt: 2,
               mb: 2,
-              backgroundColor: '#43a047',
-              '&:hover': {
-                backgroundColor: '#2e7d32',
-              },
+              backgroundColor: '#00966E',
+              py: 1.5,
               fontWeight: 'bold',
-              py: 1.3,
               fontSize: '1rem',
+              '&:hover': {
+                backgroundColor: '#007E5E',
+              },
             }}
           >
-            {isSignUp ? 'Sign Up' : 'Sign In'}
+            {isSignUp ? 'Register Account' : 'Sign In'}
           </Button>
         </Box>
 
-        <Typography variant="body2" sx={{ color: '#2e7d32' }}>
-          {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+        <Typography variant="body2">
+          {isSignUp ? 'Already have an account?' : 'New seeker?'}{' '}
           <Link
             component="button"
-            variant="body2"
             onClick={toggleMode}
-            sx={{
-              fontWeight: 'bold',
-              color: '#1b5e20',
-              '&:hover': {
-                color: '#0d4a1a',
-              },
-            }}
+            sx={{ fontWeight: 'bold', color: '#00966E' }}
           >
-            {isSignUp ? 'Sign In' : 'Sign Up'}
+            {isSignUp ? 'Sign In' : 'Register here'}
           </Link>
         </Typography>
+
+        <Link
+          component="button"
+          onClick={() => navigate('/')}
+          variant="body2"
+          sx={{ display: 'block', mt: 2, color: 'gray' }}
+        >
+          ← Back to Home
+        </Link>
       </Box>
 
-      {/* Snackbar for alerts */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

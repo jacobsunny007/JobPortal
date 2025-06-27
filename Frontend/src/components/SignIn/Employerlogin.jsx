@@ -65,7 +65,7 @@ export default function Employer() {
       setSnackOpen(true);
 
       setTimeout(() => {
-        navigate('/job-post');
+        navigate('/d');
       }, 1000);
     } catch (err) {
       const errorMsg =

@@ -3,7 +3,9 @@ const cors = require("cors");
 require("./db"); // MongoDB connection
 const job = require("./jobmodel"); // Job Schema
 const Employer = require("./employermodel"); // Employer Schema
-const Seeker = require("./Seeker"); // ✅ Fixed naming here
+const Seeker = require("./Seeker"); 
+const AppliedJob = require("./appliedJobModel");
+
 
 const app = express();
 const port = 5000;
@@ -134,6 +136,45 @@ app.put('/api/jobs/:id', async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+
+
+//api for post applied jobs
+app.post("/api/apply", async (req, res) => {
+  const { jobId, userEmail } = req.body;
+
+  if (!jobId || !userEmail) {
+    return res.status(400).json({ error: "Missing jobId or userEmail" });
+  }
+
+  try {
+    const exists = await AppliedJob.findOne({ jobId, userEmail });
+    if (exists) {
+      return res.status(409).json({ message: "Already applied" });
+    }
+
+    const newApp = await AppliedJob.create({ jobId, userEmail });
+    res.status(201).json({ message: "Application successful", newApp });
+  } catch (err) {
+    res.status(500).json({ error: "Apply failed" });
+  }
+});
+
+
+//api for get applied jobs
+app.get("/api/applied-jobs", async (req, res) => {
+  const { email } = req.query;
+  if (!email) return res.status(400).json({ error: "Email required" });
+
+  try {
+    const appliedJobs = await AppliedJob.find({ userEmail: email }).populate("jobId");
+    const jobs = appliedJobs.map((item) => item.jobId); // Return only job details
+    res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: "Fetching failed" });
+  }
+});
+
 
 // ✅ Default route
 app.get('/', (req, res) => {

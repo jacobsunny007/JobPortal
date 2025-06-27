@@ -10,6 +10,10 @@ import Jobseeker from './components/SignIn/Jobseeker'
 import Navbar from './components/Navbar/Nav'
 import Job from './components/Job/Job'
 import LandingPage from './components/SignIn/LandingPage'
+import EmployerDashboard from './components/Employer/EmployerDashboard';
+import Profile from './components/Job/Profile';
+import EditProfile from './components/Job/EditProfile';
+import AppliedJobs from './components/Job/AppliedJobs';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,8 +23,12 @@ function App() {
     {/* <Navbar/> */}
     {/* <Job/> */}
      <Routes>
+        <Route path='/editprofile' element={<EditProfile/>}/>
+        <Route path='/d' element={<EmployerDashboard/>}/>
+         <Route path='/ap' element={<AppliedJobs/>}/>
+        <Route path='/profile' element={<Profile/>}/>
         <Route path='/' element={<LandingPage/>}/>
-         <Route path="/job-post" element={<JobPostPage/>}/>
+        <Route path="/job-post" element={<JobPostPage/>}/>
         <Route path="/e" element={<Employerlogin/>}/>
         <Route path="/j" element={<Jobseeker/>}/>  
         <Route path="/job" element={<Job/>} /> 
