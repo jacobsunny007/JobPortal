@@ -27,11 +27,12 @@ export default function AppliedJobs() {
       <div className="flex items-center justify-between mb-10">
         <h2 className="text-3xl font-bold text-blue-700">Your Applied Jobs</h2>
         <button
-          className="bg-blue-600 text-blue-600 px-5 py-2 rounded-md shadow hover:bg-blue-700 transition"
-          onClick={() => navigate('/job')}
+        className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-5 py-2 rounded-md shadow hover:bg-blue-700 transition"
+         onClick={() => navigate('/job')}
         >
           ← Back to Dashboard
         </button>
+
       </div>
 
       {/* Job Cards */}
@@ -52,9 +53,15 @@ export default function AppliedJobs() {
               <p className="text-sm text-gray-500">{job.location}</p>
               <p className="text-sm text-gray-600 my-2 line-clamp-2">{job.description}</p>
               <p className="text-green-600 font-bold mb-2">{job.salary}</p>
-              <div className="flex justify-between items-center text-sm">
+              
+              <div className="flex justify-between items-center text-sm mb-2">
                 <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full">{job.type}</span>
                 <span className="text-gray-500">{new Date(job.postedAt).toLocaleDateString()}</span>
+              </div>
+
+              {/* Application Status */}
+              <div className="mt-2 text-sm font-semibold text-orange-600">
+                Status: <span className="bg-orange-100 text-orange-700 px-2 py-1 rounded-md">Waiting</span>
               </div>
             </motion.div>
           ))

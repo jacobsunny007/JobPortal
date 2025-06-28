@@ -14,6 +14,7 @@ import EmployerDashboard from './components/Employer/EmployerDashboard';
 import Profile from './components/Job/Profile';
 import EditProfile from './components/Job/EditProfile';
 import AppliedJobs from './components/Job/AppliedJobs';
+import AdminLogin from './components/Admin/Adminlogin';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -32,6 +33,7 @@ function App() {
         <Route path="/e" element={<Employerlogin/>}/>
         <Route path="/j" element={<Jobseeker/>}/>  
         <Route path="/job" element={<Job/>} /> 
+        <Route path="/ad" element={<AdminLogin/>} /> 
      </Routes>   
     </>
   )

@@ -6,7 +6,6 @@ const Employer = require("./employermodel"); // Employer Schema
 const Seeker = require("./Seeker"); 
 const AppliedJob = require("./appliedJobModel");
 
-
 const app = express();
 const port = 5000;
 
@@ -16,7 +15,7 @@ app.use(cors());
 
 // ✅ Register a new job seeker
 app.post('/api/seeker/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, age, location, linkedin, bio } = req.body;
 
   try {
     const existing = await Seeker.findOne({ email });
@@ -24,7 +23,7 @@ app.post('/api/seeker/register', async (req, res) => {
       return res.status(400).json({ error: "Email already used" });
     }
 
-    const newSeeker = new Seeker({ name, email, password }); // ✅ Correct instance
+    const newSeeker = new Seeker({ name, email, password, age, location, linkedin, bio });
     await newSeeker.save();
 
     res.status(201).json({ message: "Registered successfully" });
@@ -39,7 +38,7 @@ app.post('/api/seeker/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const seeker = await Seeker.findOne({ email }); // ✅ Correct model usage
+    const seeker = await Seeker.findOne({ email });
     if (!seeker || seeker.password !== password) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -137,9 +136,7 @@ app.put('/api/jobs/:id', async (req, res) => {
   }
 });
 
-
-
-//api for post applied jobs
+// ✅ Post applied jobs
 app.post("/api/apply", async (req, res) => {
   const { jobId, userEmail } = req.body;
 
@@ -160,21 +157,65 @@ app.post("/api/apply", async (req, res) => {
   }
 });
 
-
-//api for get applied jobs
+// ✅ Get applied jobs
 app.get("/api/applied-jobs", async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).json({ error: "Email required" });
 
   try {
     const appliedJobs = await AppliedJob.find({ userEmail: email }).populate("jobId");
-    const jobs = appliedJobs.map((item) => item.jobId); // Return only job details
+    const jobs = appliedJobs.map((item) => item.jobId);
     res.json(jobs);
   } catch (err) {
     res.status(500).json({ error: "Fetching failed" });
   }
 });
 
+// ✅ Get profile of a job seeker by email
+app.get('/api/seeker/profile', async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
+  try {
+    const seeker = await Seeker.findOne({ email });
+    if (!seeker) return res.status(404).json({ error: "User not found" });
+
+    res.status(200).json({
+      name: seeker.name,
+      email: seeker.email,
+      age: seeker.age,
+      location: seeker.location,
+      linkedin: seeker.linkedin,
+      bio: seeker.bio,
+    });
+  } catch (err) {
+    console.error("Profile fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+});
+
+// ✅ Update profile of job seeker
+app.put('/api/seeker/profile', async (req, res) => {
+  const { email, name, age, location, linkedin, bio } = req.body;
+
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
+  try {
+    const updated = await Seeker.findOneAndUpdate(
+      { email },
+      { name, age, location, linkedin, bio },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ error: "User not found" });
+
+    res.status(200).json({ message: "Profile updated", seeker: updated });
+  } catch (err) {
+    console.error("Profile update error:", err);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
 
 // ✅ Default route
 app.get('/', (req, res) => {
