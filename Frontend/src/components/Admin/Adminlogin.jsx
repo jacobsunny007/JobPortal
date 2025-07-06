@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import {
   Box,
+  Paper,
   TextField,
   Button,
   Typography,
+  Link,
   Snackbar,
   Alert,
-  Grid,
-  Paper,
-  Link
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 
 export default function AdminLogin() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -25,14 +27,11 @@ export default function AdminLogin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post('http://localhost:5000/api/admin/login', formData);
-
       setSnackbar({ open: true, message: 'Login successful!', severity: 'success' });
-
       setTimeout(() => {
-        navigate('/admin/dashboard');
+        navigate('/adb');
       }, 1500);
     } catch (error) {
       setSnackbar({
@@ -44,51 +43,52 @@ export default function AdminLogin() {
   };
 
   return (
-    <Grid
-      container
-      justifyContent="center"
-      alignItems="center"
+    <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(to right, #e3f2fd, #fce4ec)',
-        padding: 2
+        bgcolor: '#f7fafd',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Poppins, sans-serif',
       }}
     >
       <Paper
-        elevation={6}
+        elevation={8}
         sx={{
-          p: 4,
-          borderRadius: 4,
           width: '100%',
-          maxWidth: 420,
-          backgroundColor: '#ffffff',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+          maxWidth: 410,
+          px: 4,
+          py: 5,
+          borderRadius: 4,
+          boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.11)',
+          mx: 2,
         }}
       >
-        {/* Admin Logo or Title */}
-        <Box
-          sx={{
-            textAlign: 'center',
-            mb: 4,
-            fontSize: '2rem',
-            fontWeight: 'bold',
-            color: '#1976d2',
-            letterSpacing: 1,
-            fontFamily: `'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`,
-          }}
-        >
-          Admin Panel
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+          {/* Large Icon */}
+          <Box
+            sx={{
+              bgcolor: '#232f3e',
+              borderRadius: 2,
+              width: 60,
+              height: 60,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 1,
+              boxShadow: 2,
+            }}
+          >
+            <ShieldOutlinedIcon sx={{ color: '#fff', fontSize: 36 }} />
+          </Box>
+          <Typography variant="h5" sx={{ fontWeight: 800, mt: 1, color: '#232f3e' }}>
+            Admin Portal
+          </Typography>
+          <Typography sx={{ color: '#6b7280', fontWeight: 500, mb: 1, fontSize: 16 }}>
+            Secure administrative access
+          </Typography>
         </Box>
-
-        <Typography
-          variant="h6"
-          align="center"
-          fontWeight="bold"
-          gutterBottom
-          sx={{ color: '#333' }}
-        >
-          Administrator Login
-        </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
@@ -100,13 +100,13 @@ export default function AdminLogin() {
             onChange={handleChange}
             margin="normal"
             required
-            sx={{
-              '& .MuiInputBase-root': {
+            InputProps={{
+              sx: {
+                bgcolor: '#f8fafc',
                 borderRadius: 2,
               }
             }}
           />
-
           <TextField
             fullWidth
             label="Password"
@@ -116,12 +116,24 @@ export default function AdminLogin() {
             onChange={handleChange}
             margin="normal"
             required
-            sx={{
-              '& .MuiInputBase-root': {
+            InputProps={{
+              sx: {
+                bgcolor: '#f8fafc',
                 borderRadius: 2,
               }
             }}
           />
+
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
+            <FormControlLabel
+              control={<Checkbox size="small" sx={{ color: '#232f3e' }} />}
+              label={<Typography sx={{ fontSize: 15 }}>Remember me</Typography>}
+              sx={{ m: 0 }}
+            />
+            {/* <Link component="button" underline="hover" sx={{ fontSize: 15, color: '#232f3e', fontWeight: 500 }}>
+              Forgot password?
+            </Link> */}
+          </Box>
 
           <Button
             type="submit"
@@ -129,24 +141,19 @@ export default function AdminLogin() {
             variant="contained"
             sx={{
               mt: 3,
-              py: 1.2,
+              background: '#232f3e',
               fontWeight: 'bold',
-              fontSize: '1rem',
-              background: 'linear-gradient(to right, #1976d2, #2196f3)',
-              '&:hover': {
-                background: 'linear-gradient(to right, #1565c0, #1e88e5)',
-              },
+              py: 1.3,
+              fontSize: 18,
               borderRadius: 2,
+              boxShadow: 2,
+              textTransform: 'none',
+              letterSpacing: 0.2,
+              '&:hover': { background: '#101820' },
             }}
           >
-            Login
+            Access Dashboard
           </Button>
-
-          <Typography variant="body2" align="center" mt={2} sx={{ color: '#666' }}>
-            <Link component="button" underline="hover" color="primary">
-              Forgot password?
-            </Link>
-          </Typography>
         </Box>
       </Paper>
 
@@ -165,6 +172,6 @@ export default function AdminLogin() {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </Grid>
+    </Box>
   );
 }

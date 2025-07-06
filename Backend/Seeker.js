@@ -1,17 +1,19 @@
-const mongoose = require("mongoose");
+// models/Seeker.js
+const mongoose = require('mongoose');
 
 const seekerSchema = new mongoose.Schema({
-  name: { type: String },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: { type: String, required: true },
-  age: { type: Number },
-  location: { type: String },
-  linkedin: { type: String },
-  bio: { type: String },
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
+  age: Number,
+  location: String,
+  linkedin: String,
+  bio: String,
+  resume: {
+    data: Buffer,
+    contentType: String,
+    fileName: String
+  }
 });
 
-module.exports = mongoose.model("Seeker", seekerSchema);
+module.exports = mongoose.model('Seeker', seekerSchema);
